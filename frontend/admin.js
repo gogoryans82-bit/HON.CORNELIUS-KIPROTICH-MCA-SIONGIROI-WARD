@@ -30,8 +30,6 @@ function showDashboard() {
     if (token) {
         document.getElementById('loginSection').style.display = 'none';
         document.getElementById('adminDashboard').style.display = 'block';
-        // Set auth header for future requests
-        // Could also fetch existing events/news to edit
     }
 }
 
