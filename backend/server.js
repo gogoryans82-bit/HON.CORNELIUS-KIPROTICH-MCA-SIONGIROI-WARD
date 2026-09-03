@@ -29,7 +29,7 @@ const volunteers = [];
 const donations = [];
 const events = [
   { id: 1, title: 'Campaign Launch Rally', date: '2026-09-15', location: 'Siorngiroi Grounds' },
-  { id: 2, title: 'Women's Forum', date: '2026-09-22', location: 'Chepalungu Hall' },
+  { id: 2, title: "Women's Forum", date: '2026-09-22', location: 'Chepalungu Hall' },
   { id: 3, title: 'Youth Town Hall', date: '2026-10-01', location: 'Siorngiroi Market' }
 ];
 const news = [
