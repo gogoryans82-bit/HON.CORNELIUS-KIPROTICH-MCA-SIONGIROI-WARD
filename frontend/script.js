@@ -1,4 +1,4 @@
-// Load events on page load
+// Load events
 async function loadEvents() {
     const res = await fetch('/api/events');
     const data = await res.json();
@@ -16,6 +16,24 @@ async function loadEvents() {
     });
 }
 
+// Load news
+async function loadNews() {
+    const res = await fetch('/api/news');
+    const data = await res.json();
+    const newsList = document.getElementById('newsList');
+    newsList.innerHTML = '';
+    data.news.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'news-card';
+        card.innerHTML = `
+            ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.title}">` : ''}
+            <h3>${item.title}</h3>
+            <p>${item.caption}</p>
+        `;
+        newsList.appendChild(card);
+    });
+}
+
 async function rsvp(eventId) {
     const name = prompt('Your name:');
     const phone = prompt('Your phone (e.g., 712345678):');
@@ -25,7 +43,7 @@ async function rsvp(eventId) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ eventId, name, phone })
     });
-    alert('RSVP confirmed! We'll send you a reminder.');
+    alert('RSVP confirmed!');
 }
 
 // Volunteer form submit
@@ -63,7 +81,7 @@ document.getElementById('donateForm').addEventListener('submit', async (e) => {
     form.reset();
 });
 
-// Load fundraising progress
+// Load fundraising
 async function loadFundraising() {
     const res = await fetch('/api/fundraising');
     const data = await res.json();
@@ -79,8 +97,7 @@ function updateProgress(raised, goal) {
 // Share functions
 function shareOnWhatsApp() {
     const text = `I support Cornelius Rotich for MCA Siorngiroi Ward! Join us.`;
-    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank');
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
 }
 
 function shareOnFacebook() {
@@ -90,16 +107,15 @@ function shareOnFacebook() {
 
 function shareOnTwitter() {
     const text = `I support Cornelius Rotich for MCA Siorngiroi Ward!`;
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`;
-    window.open(url, '_blank');
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`, '_blank');
 }
 
 // Menu toggle
 function toggleMenu() {
-    const nav = document.querySelector('.main-nav');
-    nav.classList.toggle('open');
+    document.querySelector('.main-nav').classList.toggle('open');
 }
 
 // Initial load
 loadEvents();
+loadNews();
 loadFundraising();
