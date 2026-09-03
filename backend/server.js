@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 
 const app = express();
 app.use(cors());
-app.use(express.json({ limit: '10mb' })); // allow large image uploads (base64)
+app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 const PORT = process.env.PORT || 3000;
@@ -19,9 +19,9 @@ const SMS_GATEWAY_URL = process.env.SMS_GATEWAY_URL;
 const SMS_GATEWAY_API_KEY = process.env.SMS_GATEWAY_API_KEY;
 
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123'; // In production, hash this! We'll hash on start for demo.
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 
-// Temporary token store (in production, use JWT or sessions)
+// Simple token for demo (use JWT in production)
 let adminToken = null;
 
 // In-memory data
@@ -70,21 +70,20 @@ function requireAdmin(req, res, next) {
 }
 
 // Routes
-
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 
-// Public routes
+// Public: get events
 app.get('/api/events', (req, res) => res.json({ ok: true, events }));
+
+// Public: get news
 app.get('/api/news', (req, res) => res.json({ ok: true, news }));
+
+// Public: get fundraising
 app.get('/api/fundraising', (req, res) => {
-  res.json({
-    ok: true,
-    totalRaised,
-    goal: FUNDRAISING_GOAL,
-    percentage: Math.min(100, Math.round((totalRaised / FUNDRAISING_GOAL) * 100))
-  });
+  res.json({ ok: true, totalRaised, goal: FUNDRAISING_GOAL, percentage: Math.min(100, Math.round((totalRaised / FUNDRAISING_GOAL) * 100)) });
 });
 
+// Public: volunteer signup
 app.post('/api/volunteers', async (req, res) => {
   const { name, phone, location } = req.body;
   if (!name || !phone || !location) return res.status(400).json({ ok: false, message: 'Missing fields' });
@@ -95,17 +94,18 @@ app.post('/api/volunteers', async (req, res) => {
   res.json({ ok: true, volunteer });
 });
 
+// Public: donation
 app.post('/api/donations', async (req, res) => {
   const { name, amount, phone } = req.body;
   const amt = parseFloat(amount);
   if (!name || !amt || amt <= 0) return res.status(400).json({ ok: false, message: 'Invalid donation' });
-  const donation = { id: Date.now(), name, amount: amt, phone: phone || '' };
-  donations.push(donation);
+  donations.push({ id: Date.now(), name, amount: amt, phone: phone || '' });
   totalRaised += amt;
   await sendTelegramMessage(`💰 Donation: ${name} - KSH ${amt.toLocaleString()}`);
   res.json({ ok: true, totalRaised });
 });
 
+// Public: RSVP to event
 app.post('/api/rsvp', async (req, res) => {
   const { eventId, name, phone } = req.body;
   const event = events.find(e => e.id === parseInt(eventId));
@@ -119,7 +119,6 @@ app.post('/api/rsvp', async (req, res) => {
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body;
   if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-    // Generate a simple token (in production use JWT)
     adminToken = 'admin-' + Date.now();
     res.json({ ok: true, token: adminToken });
   } else {
@@ -127,7 +126,7 @@ app.post('/api/admin/login', (req, res) => {
   }
 });
 
-// Admin: create event
+// Admin: add event
 app.post('/api/admin/events', requireAdmin, (req, res) => {
   const { title, date, location } = req.body;
   if (!title || !date || !location) return res.status(400).json({ ok: false, message: 'Missing fields' });
@@ -136,7 +135,7 @@ app.post('/api/admin/events', requireAdmin, (req, res) => {
   res.json({ ok: true, event });
 });
 
-// Admin: create news
+// Admin: add news
 app.post('/api/admin/news', requireAdmin, (req, res) => {
   const { title, caption, imageUrl } = req.body;
   if (!title || !caption) return res.status(400).json({ ok: false, message: 'Missing title/caption' });
@@ -146,16 +145,21 @@ app.post('/api/admin/news', requireAdmin, (req, res) => {
     caption,
     imageUrl: imageUrl || 'https://via.placeholder.com/300'
   };
-  news.unshift(newsItem); // newest first
+  news.unshift(newsItem);
   res.json({ ok: true, newsItem });
 });
 
-// Serve admin page
+// Serve admin page at /admin
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend', 'admin.html'));
 });
 
-// Serve frontend
+// Serve campaign page at root (index.html)
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
+});
+
+// Catch-all: serve index.html for any other route (so React routing works if added later)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
 });
