@@ -3,39 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin – Cornelius Campaign</title>
+    <title>Cornelius Rotich – For MCA Siorngiroi Ward</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="loginSection">
-        <h2>Admin Login</h2>
-        <input type="text" id="username" placeholder="Username">
-        <input type="password" id="password" placeholder="Password">
-        <button onclick="adminLogin()">Login</button>
-        <p id="loginMsg"></p>
-    </div>
 
-    <div id="adminDashboard" style="display:none;">
-        <h2>Admin Dashboard</h2>
-        <button onclick="logout()">Logout</button>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="logo">
+            <img src="logo.png" alt="Orange Party Logo">
+            <span class="candidate-name">Cornelius Rotich</span>
+        </div>
+        <nav class="main-nav">
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#news">News</a>
+            <a href="#events">Events</a>
+            <a href="#volunteer">Volunteer</a>
+            <a href="#donate">Donate</a>
+        </nav>
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    </header>
 
-        <h3>Add Event</h3>
-        <form id="eventForm">
-            <input type="text" name="title" placeholder="Event Title" required>
-            <input type="date" name="date" required>
-            <input type="text" name="location" placeholder="Location" required>
-            <button type="submit">Add Event</button>
+    <!-- Hero -->
+    <section id="home" class="hero" style="background-image: url('background.png');">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <img src="candidate.jpg" alt="Cornelius Rotich" class="candidate-photo">
+            <h1>For a Better Siorngiroi</h1>
+            <p>Your Voice, Your Future – Vote Cornelius Rotich for MCA</p>
+            <a href="#volunteer" class="btn-primary">Join the Campaign</a>
+        </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="section">
+        <h2>About Cornelius</h2>
+        <p>Cornelius Rotich is a dedicated community leader committed to improving education, healthcare, and infrastructure in Siorngiroi Ward.</p>
+        <div class="manifesto">
+            <h3>My Promises</h3>
+            <ul>
+                <li>✅ Improve access to clean water</li>
+                <li>✅ Support small businesses</li>
+                <li>✅ Upgrade local schools</li>
+                <li>✅ Enhance healthcare services</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- News -->
+    <section id="news" class="section">
+        <h2>Latest News</h2>
+        <div id="newsList" class="news-list"></div>
+    </section>
+
+    <!-- Events -->
+    <section id="events" class="section">
+        <h2>Upcoming Events</h2>
+        <div id="eventsList" class="events-list"></div>
+    </section>
+
+    <!-- Volunteer Signup -->
+    <section id="volunteer" class="section">
+        <h2>Become a Volunteer</h2>
+        <form id="volunteerForm">
+            <input type="text" name="name" placeholder="Full Name" required>
+            <input type="tel" name="phone" placeholder="Phone (e.g., 712345678)" required>
+            <input type="text" name="location" placeholder="Location/Village" required>
+            <button type="submit" class="btn-primary">Sign Up</button>
         </form>
+        <p id="volunteerMsg"></p>
+    </section>
 
-        <h3>Add News</h3>
-        <form id="newsForm">
-            <input type="text" name="title" placeholder="News Title" required>
-            <textarea name="caption" placeholder="News Caption" required></textarea>
-            <input type="text" name="imageUrl" placeholder="Image URL (optional)">
-            <button type="submit">Add News</button>
+    <!-- Donate -->
+    <section id="donate" class="section">
+        <h2>Support the Campaign</h2>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar" style="width:0%"></div>
+        </div>
+        <p>Raised: <span id="raised">KSH 0</span> / Goal: KSH 500,000</p>
+        <form id="donateForm">
+            <input type="text" name="name" placeholder="Your Name" required>
+            <input type="number" name="amount" placeholder="Amount (KSH)" required>
+            <input type="tel" name="phone" placeholder="Phone (optional)">
+            <button type="submit" class="btn-primary">Donate Now</button>
         </form>
-    </div>
+        <p id="donateMsg"></p>
+    </section>
 
-    <script src="admin.js"></script>
+    <!-- Social Share -->
+    <section class="section">
+        <h2>Share the Campaign</h2>
+        <button onclick="shareOnWhatsApp()">📱 WhatsApp</button>
+        <button onclick="shareOnFacebook()">📘 Facebook</button>
+        <button onclick="shareOnTwitter()">🐦 X</button>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <p>© 2026 Cornelius Rotich Campaign. All rights reserved.</p>
+        <p>Paid for by the Orange Party.</p>
+        <a href="/admin">Admin</a>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
